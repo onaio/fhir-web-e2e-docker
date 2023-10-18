@@ -1,0 +1,125 @@
+version: "3.9"
+services:
+  keycloak:
+    restart: unless-stopped
+    image: quay.io/keycloak/keycloak:19.0.3-legacy
+    container_name: keycloak
+    environment:
+      - "KEYCLOAK_USER=admin"
+      - "KEYCLOAK_PASSWORD=admin"
+      - "DB_VENDOR=postgres"
+      - "DB_PASSWORD=0000"
+      - "DB_USER=root"
+      - "DB_ADDR=postgres:5432"
+      - "PROXY_ADDRESS_FORWARDING=true"
+      - "DB_DATABASE=fhir"
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    depends_on:
+      - postgres
+
+  gateway:
+    image: opensrp/fhir-gateway:v0.1.39
+    container_name: gateway
+    ports:
+      - "8085:8080"
+    environment:
+      - "PROXY_TO=http://hapi-fhir:8080/fhir"
+      - "TOKEN_ISSUER=http://keycloak:8080/auth/realms/fhir"
+      - "ACCESS_CHECKER=permission"
+      - "ALLOWED_QUERIES_FILE=resources/hapi_page_url_allowed_queries.json"
+      - "SYNC_FILTER_IGNORE_RESOURCES_FILE=resources/hapi_sync_filter_ignored_queries.json"
+    depends_on:
+      - hapi-fhir
+      - keycloak
+
+  hapi-fhir:
+    restart: unless-stopped
+    container_name: hapi-fhir
+    image: opensrp/hapi-fhir-jpaserver-starter:v6.1.7-SNAPSHOT
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./application.yaml:/data/hapi-fhir/config/application.yaml
+    depends_on:
+      - keycloak
+#      - jaeger
+    environment:
+      - "SPRING_CONFIG_LOCATION=/data/hapi-fhir/config/application.yaml"
+#      - "JAVA_TOOL_OPTIONS=-javaagent:/app/opentelemetry-javaagent.jar"
+#      - "OTEL_TRACES_EXPORTER=jaeger"
+#      - "OTEL_SERVICE_NAME=hapi-fhir-server"
+#      - "OTEL_EXPORTER_JAEGER_ENDPOINT=http://jaeger:14250"
+
+  postgres:
+    restart: unless-stopped
+    image: postgres:14
+    container_name: postgres
+    ports:
+      - "5457:5432"
+    environment:
+      - POSTGRES_PASSWORD=0000
+      - POSTGRES_USER=root
+      - POSTGRES_DB=fhir
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  fhir-web:
+    restart: unless-stopped
+    image: opensrp/web:v3.1.2-rc1
+    container_name: fhir-web
+    ports:
+      - '3000:3000'
+    volumes:
+      # volume with React front-end environment variables
+      - ./config.js.tpl:/etc/confd/templates/config.js.tmpl
+    depends_on:
+      - hapi-fhir
+    environment:
+      # optional overrides
+      - 'NODE_ENV=development' # 'NODE_ENV=development' if fhir-web-base-url === http://localhost:3000
+      - 'EXPRESS_ALLOW_TOKEN_RENEWAL=true'
+      - 'EXPRESS_OPENSRP_LOGOUT_URL=null'
+      - 'EXPRESS_REACT_BUILD_PATH=/usr/src/web'
+
+      # keycloak
+      - 'EXPRESS_OPENSRP_CLIENT_ID=fhir-client'
+      - 'EXPRESS_OPENSRP_CLIENT_SECRET=64cK4L5vo8IhoLasPvZivZe0P08GzVIW'
+      - 'EXPRESS_OPENSRP_ACCESS_TOKEN_URL=http://keycloak:8080/auth/realms/fhir/protocol/openid-connect/token'
+      - 'EXPRESS_OPENSRP_AUTHORIZATION_URL=http://keycloak:8080/auth/realms/fhir/protocol/openid-connect/auth'
+      - 'EXPRESS_KEYCLOAK_LOGOUT_URL=http://keycloak:8080/auth/realms/fuff/protocol/openid-connect/logout'
+      - 'EXPRESS_OPENSRP_USER_URL=http://keycloak:8080/auth/realms/fhir/protocol/openid-connect/userinfo'
+
+      # fhir web
+      - 'EXPRESS_OPENSRP_CALLBACK_URL=http://localhost:3000/oauth/callback/OpenSRP/'
+      - 'EXPRESS_FRONTEND_OPENSRP_CALLBACK_URL=http://localhost:3000/fe/oauth/callback/opensrp'
+      # - 'EXPRESS_SERVER_LOGOUT_URL=http://localhost:3000/logout'
+      - 'EXPRESS_REDIS_STAND_ALONE_URL=redis://redis:6379'
+
+      # UUID's
+      - 'EXPRESS_SESSION_SECRET=e650f634-3668-43a8-b288-97012969aaac'
+
+      # content security policy configuration
+      # remove optional-sentry-base-url config block if your deployment has no sentry
+      # - 'EXPRESS_CONTENT_SECURITY_POLICY_CONFIG={"connect-src":["''self''","http://localhost:8080","http://localhost:8081/fhir"],"default-src":["''self''"],"img-src":["''self''","https://github.com/opensrp/","https://*.githubusercontent.com/opensrp/"]}'
+      - 'EXPRESS_CONTENT_SECURITY_POLICY_CONFIG=false'
+
+  redis:
+      image: redis:latest
+      restart: unless-stopped
+      container_name: my-redis
+      ports:
+        - "6379:6379"
+
+#  jaeger:
+#    image: jaegertracing/all-in-one:1.49
+#    ports:
+#      - "14250:14250"
+#      - "4317:4317"
+#      - "4318:4318"
+#      - "16686:16686"
+
+volumes:
+  pgdata:
