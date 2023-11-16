@@ -11,9 +11,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: 'jdbc:postgresql://postgres:5432/hapi_fhir'
-    username: postgres
-    password: mysecretpassword
+    url: 'jdbc:postgresql://postgres:5432/fhir'
+    username: root
+    password: '0000'
     driverClassName: org.postgresql.Driver
     max-active: 15
   jpa:
