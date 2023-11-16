@@ -68,7 +68,7 @@ services:
 
   fhir-web:
     restart: unless-stopped
-    image: opensrp/web:v3.1.2-rc1
+    image: opensrp/web:v3.1.2
     container_name: fhir-web
     ports:
       - '3000:3000'
