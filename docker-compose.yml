@@ -37,7 +37,7 @@ services:
   hapi-fhir:
     restart: unless-stopped
     container_name: hapi-fhir
-    image: opensrp/hapi-fhir-jpaserver-starter:v6.1.7-SNAPSHOT
+    image: opensrp/hapi-fhir-jpaserver-starter:v6.1.8-SNAPSHOT
     ports:
       - "8081:8080"
     volumes:
@@ -74,7 +74,7 @@ services:
       - '3000:3000'
     volumes:
       # volume with React front-end environment variables
-      - ./config.js.tpl:/etc/confd/templates/config.js.tmpl
+      - ./config.js.tpl:/etc/confd/templates/config.js.tpl
     depends_on:
       - hapi-fhir
     environment:
