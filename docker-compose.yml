@@ -74,7 +74,7 @@ services:
       - '3000:3000'
     volumes:
       # volume with React front-end environment variables
-      - ./config.js.tpl:/etc/confd/templates/config.js.tpl
+      - ./config.js.tpl:/etc/confd/templates/config.js.tmpl
     depends_on:
       - hapi-fhir
     environment:
