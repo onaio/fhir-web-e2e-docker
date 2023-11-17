@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "src/create-realm.js",
+  "main": "src/manage-realm.js",
   "scripts": {
-    "create-realm": "node src/create-realm.js"
+    "create-realm": "node src/manage-realm.js",
+    "update-realm": "UPDATE_REALM='true' node src/manage-realm.js"
   },
   "keywords": [],
   "author": "",
