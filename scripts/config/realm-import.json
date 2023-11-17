@@ -1,56 +1,543 @@
 {
-    "realm": "fhir",
-    "enabled": true,
-    "clients": [
-      {
-        "clientId": "fhir-client",
-        "enabled": true,
-        "publicClient": true,
-        "directAccessGrantsEnabled": true,
-        "redirectUris": [ "http://localhost/*" ]
+  "realm": "fhir",
+  "enabled": true,
+  "clients": [
+    {
+      "name": "Fhir test client",
+      "clientId": "fhir-client",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "demo",
+      "enabled": true,
+      "email": "demo@ona.io",
+      "firstName": "demo",
+      "lastName": "stration",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password"
+        }
+      ],
+      "groups": [
+        "/fhir-super-user/demigod"
+      ],
+      "emailVerified": false,
+      "attributes": {
+        "fhir-core-app-id": [
+          "app-id"
+        ]
       }
-    ],
-    "users" : [
-      {
-        "username" : "demo",
-        "enabled": true,
-        "email" : "demo@ona.io",
-        "firstName": "demo",
-        "lastName": "stration",
-        "credentials" : [
-          { "type" : "password",
-            "value" : "Peace254" }
+    },
+    {
+      "username": "webmaster",
+      "enabled": true,
+      "firstName": "web",
+      "lastName": "master",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin"
+        }
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "realm-admin"
         ],
-        "realmRoles": [ "offline_access"  ],
-        "clientRoles": {
-          "account": [ "manage-account" ]
+        "account": [
+          "manage-account"
+        ]
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "fhir-super-user",
+      "realmRoles": [
+        "MANAGE_PATIENT",
+        "MANAGE_PRACTITIONER",
+        "MANAGE_PRACTITIONERROLE",
+        "MANAGE_GROUP",
+        "MANAGE_ORGANIZATION",
+        "MANAGE_ORGANIZATIONAFFILIATION",
+        "MANAGE_HEALTHCARESERVICE",
+        "MANAGE_LOCATION",
+        "MANAGE_OBSERVATION",
+        "MANAGE_QUESTIONNAIRERESPONSE",
+        "MANAGE_CARETEAM",
+        "MANAGE_PLANDEFINITION",
+        "MANAGE_QUESTIONNAIRE"
+      ],
+      "subGroups": [
+        {
+          "name": "demigod",
+          "clientRoles": {
+            "realm-management": [
+              "realm-admin"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "chw",
+      "realmRoles": [
+        "MANAGE_QUESTIONNAIRE",
+        "MANAGE_QUESTIONNAIRERESPONSE"
+      ]
+    },
+    {
+      "name": "supervisor",
+      "realmRoles": [
+        "MANAGE_ORGANIZATION",
+        "MANAGE_ORGANIZATIONAFFILIATION",
+        "MANAGE_LOCATION",
+        "MANAGE_PRACTITIONER"
+      ]
+    }
+  ],
+  "roles": {
+    "realm": [
+      {
+        "name": "GET_PATIENT",
+        "composite": false,
+        "description": "Allow users to fetch Patient."
+      },
+      {
+        "name": "POST_PATIENT",
+        "composite": false,
+        "description": "Allow users to create Patient."
+      },
+      {
+        "name": "PUT_PATIENT",
+        "composite": false,
+        "description": "Allow users to modify Patient."
+      },
+      {
+        "name": "DELETE_PATIENT",
+        "composite": false,
+        "description": "Allow users to delete Patient."
+      },
+      {
+        "name": "MANAGE_PATIENT",
+        "composite": true,
+        "description": "Allow users to manage Patient.",
+        "composites": {
+          "realm": [
+            "GET_PATIENT",
+            "POST_PATIENT",
+            "PUT_PATIENT",
+            "DELETE_PATIENT"
+          ]
         }
       },
       {
-        "username" : "admin",
-        "enabled": true,
-        "firstName": "Admin",
-        "lastName": "Test",
-        "credentials" : [
-          { "type" : "password",
-            "value" : "admin" }
-        ],
-        "clientRoles": {
-          "realm-management": [ "realm-admin" ],
-          "account": [ "manage-account" ]
+        "name": "GET_PRACTITIONER",
+        "composite": false,
+        "description": "Allow users to fetch Practitioner."
+      },
+      {
+        "name": "POST_PRACTITIONER",
+        "composite": false,
+        "description": "Allow users to create Practitioner."
+      },
+      {
+        "name": "PUT_PRACTITIONER",
+        "composite": false,
+        "description": "Allow users to modify Practitioner."
+      },
+      {
+        "name": "DELETE_PRACTITIONER",
+        "composite": false,
+        "description": "Allow users to delete Practitioner."
+      },
+      {
+        "name": "MANAGE_PRACTITIONER",
+        "composite": true,
+        "description": "Allow users to manage Practitioner.",
+        "composites": {
+          "realm": [
+            "GET_PRACTITIONER",
+            "POST_PRACTITIONER",
+            "PUT_PRACTITIONER",
+            "DELETE_PRACTITIONER"
+          ]
+        }
+      },
+      {
+        "name": "GET_PRACTITIONERROLE",
+        "composite": false,
+        "description": "Allow users to fetch PractitionerRole."
+      },
+      {
+        "name": "POST_PRACTITIONERROLE",
+        "composite": false,
+        "description": "Allow users to create PractitionerRole."
+      },
+      {
+        "name": "PUT_PRACTITIONERROLE",
+        "composite": false,
+        "description": "Allow users to modify PractitionerRole."
+      },
+      {
+        "name": "DELETE_PRACTITIONERROLE",
+        "composite": false,
+        "description": "Allow users to delete PractitionerRole."
+      },
+      {
+        "name": "MANAGE_PRACTITIONERROLE",
+        "composite": true,
+        "description": "Allow users to manage PractitionerRole.",
+        "composites": {
+          "realm": [
+            "GET_PRACTITIONERROLE",
+            "POST_PRACTITIONERROLE",
+            "PUT_PRACTITIONERROLE",
+            "DELETE_PRACTITIONERROLE"
+          ]
+        }
+      },
+      {
+        "name": "GET_GROUP",
+        "composite": false,
+        "description": "Allow users to fetch Group."
+      },
+      {
+        "name": "POST_GROUP",
+        "composite": false,
+        "description": "Allow users to create Group."
+      },
+      {
+        "name": "PUT_GROUP",
+        "composite": false,
+        "description": "Allow users to modify Group."
+      },
+      {
+        "name": "DELETE_GROUP",
+        "composite": false,
+        "description": "Allow users to delete Group."
+      },
+      {
+        "name": "MANAGE_GROUP",
+        "composite": true,
+        "description": "Allow users to manage Group.",
+        "composites": {
+          "realm": [
+            "GET_GROUP",
+            "POST_GROUP",
+            "PUT_GROUP",
+            "DELETE_GROUP"
+          ]
+        }
+      },
+      {
+        "name": "GET_ORGANIZATION",
+        "composite": false,
+        "description": "Allow users to fetch Organization."
+      },
+      {
+        "name": "POST_ORGANIZATION",
+        "composite": false,
+        "description": "Allow users to create Organization."
+      },
+      {
+        "name": "PUT_ORGANIZATION",
+        "composite": false,
+        "description": "Allow users to modify Organization."
+      },
+      {
+        "name": "DELETE_ORGANIZATION",
+        "composite": false,
+        "description": "Allow users to delete Organization."
+      },
+      {
+        "name": "MANAGE_ORGANIZATION",
+        "composite": true,
+        "description": "Allow users to manage Organization.",
+        "composites": {
+          "realm": [
+            "GET_ORGANIZATION",
+            "POST_ORGANIZATION",
+            "PUT_ORGANIZATION",
+            "DELETE_ORGANIZATION"
+          ]
+        }
+      },
+      {
+        "name": "GET_ORGANIZATIONAFFILIATION",
+        "composite": false,
+        "description": "Allow users to fetch OrganizationAffiliation."
+      },
+      {
+        "name": "POST_ORGANIZATIONAFFILIATION",
+        "composite": false,
+        "description": "Allow users to create OrganizationAffiliation."
+      },
+      {
+        "name": "PUT_ORGANIZATIONAFFILIATION",
+        "composite": false,
+        "description": "Allow users to modify OrganizationAffiliation."
+      },
+      {
+        "name": "DELETE_ORGANIZATIONAFFILIATION",
+        "composite": false,
+        "description": "Allow users to delete OrganizationAffiliation."
+      },
+      {
+        "name": "MANAGE_ORGANIZATIONAFFILIATION",
+        "composite": true,
+        "description": "Allow users to manage OrganizationAffiliation.",
+        "composites": {
+          "realm": [
+            "GET_ORGANIZATIONAFFILIATION",
+            "POST_ORGANIZATIONAFFILIATION",
+            "PUT_ORGANIZATIONAFFILIATION",
+            "DELETE_ORGANIZATIONAFFILIATION"
+          ]
+        }
+      },
+      {
+        "name": "GET_HEALTHCARESERVICE",
+        "composite": false,
+        "description": "Allow users to fetch HealthcareService."
+      },
+      {
+        "name": "POST_HEALTHCARESERVICE",
+        "composite": false,
+        "description": "Allow users to create HealthcareService."
+      },
+      {
+        "name": "PUT_HEALTHCARESERVICE",
+        "composite": false,
+        "description": "Allow users to modify HealthcareService."
+      },
+      {
+        "name": "DELETE_HEALTHCARESERVICE",
+        "composite": false,
+        "description": "Allow users to delete HealthcareService."
+      },
+      {
+        "name": "MANAGE_HEALTHCARESERVICE",
+        "composite": true,
+        "description": "Allow users to manage HealthcareService.",
+        "composites": {
+          "realm": [
+            "GET_HEALTHCARESERVICE",
+            "POST_HEALTHCARESERVICE",
+            "PUT_HEALTHCARESERVICE",
+            "DELETE_HEALTHCARESERVICE"
+          ]
+        }
+      },
+      {
+        "name": "GET_LOCATION",
+        "composite": false,
+        "description": "Allow users to fetch Location."
+      },
+      {
+        "name": "POST_LOCATION",
+        "composite": false,
+        "description": "Allow users to create Location."
+      },
+      {
+        "name": "PUT_LOCATION",
+        "composite": false,
+        "description": "Allow users to modify Location."
+      },
+      {
+        "name": "DELETE_LOCATION",
+        "composite": false,
+        "description": "Allow users to delete Location."
+      },
+      {
+        "name": "MANAGE_LOCATION",
+        "composite": true,
+        "description": "Allow users to manage Location.",
+        "composites": {
+          "realm": [
+            "GET_LOCATION",
+            "POST_LOCATION",
+            "PUT_LOCATION",
+            "DELETE_LOCATION"
+          ]
+        }
+      },
+      {
+        "name": "GET_OBSERVATION",
+        "composite": false,
+        "description": "Allow users to fetch Observation."
+      },
+      {
+        "name": "POST_OBSERVATION",
+        "composite": false,
+        "description": "Allow users to create Observation."
+      },
+      {
+        "name": "PUT_OBSERVATION",
+        "composite": false,
+        "description": "Allow users to modify Observation."
+      },
+      {
+        "name": "DELETE_OBSERVATION",
+        "composite": false,
+        "description": "Allow users to delete Observation."
+      },
+      {
+        "name": "MANAGE_OBSERVATION",
+        "composite": true,
+        "description": "Allow users to manage Observation.",
+        "composites": {
+          "realm": [
+            "GET_OBSERVATION",
+            "POST_OBSERVATION",
+            "PUT_OBSERVATION",
+            "DELETE_OBSERVATION"
+          ]
+        }
+      },
+      {
+        "name": "GET_QUESTIONNAIRERESPONSE",
+        "composite": false,
+        "description": "Allow users to fetch QuestionnaireResponse."
+      },
+      {
+        "name": "POST_QUESTIONNAIRERESPONSE",
+        "composite": false,
+        "description": "Allow users to create QuestionnaireResponse."
+      },
+      {
+        "name": "PUT_QUESTIONNAIRERESPONSE",
+        "composite": false,
+        "description": "Allow users to modify QuestionnaireResponse."
+      },
+      {
+        "name": "DELETE_QUESTIONNAIRERESPONSE",
+        "composite": false,
+        "description": "Allow users to delete QuestionnaireResponse."
+      },
+      {
+        "name": "MANAGE_QUESTIONNAIRERESPONSE",
+        "composite": true,
+        "description": "Allow users to manage QuestionnaireResponse.",
+        "composites": {
+          "realm": [
+            "GET_QUESTIONNAIRERESPONSE",
+            "POST_QUESTIONNAIRERESPONSE",
+            "PUT_QUESTIONNAIRERESPONSE",
+            "DELETE_QUESTIONNAIRERESPONSE"
+          ]
+        }
+      },
+      {
+        "name": "GET_CARETEAM",
+        "composite": false,
+        "description": "Allow users to fetch CareTeam."
+      },
+      {
+        "name": "POST_CARETEAM",
+        "composite": false,
+        "description": "Allow users to create CareTeam."
+      },
+      {
+        "name": "PUT_CARETEAM",
+        "composite": false,
+        "description": "Allow users to modify CareTeam."
+      },
+      {
+        "name": "DELETE_CARETEAM",
+        "composite": false,
+        "description": "Allow users to delete CareTeam."
+      },
+      {
+        "name": "MANAGE_CARETEAM",
+        "composite": true,
+        "description": "Allow users to manage CareTeam.",
+        "composites": {
+          "realm": [
+            "GET_CARETEAM",
+            "POST_CARETEAM",
+            "PUT_CARETEAM",
+            "DELETE_CARETEAM"
+          ]
+        }
+      },
+      {
+        "name": "GET_PLANDEFINITION",
+        "composite": false,
+        "description": "Allow users to fetch PlanDefinition."
+      },
+      {
+        "name": "POST_PLANDEFINITION",
+        "composite": false,
+        "description": "Allow users to create PlanDefinition."
+      },
+      {
+        "name": "PUT_PLANDEFINITION",
+        "composite": false,
+        "description": "Allow users to modify PlanDefinition."
+      },
+      {
+        "name": "DELETE_PLANDEFINITION",
+        "composite": false,
+        "description": "Allow users to delete PlanDefinition."
+      },
+      {
+        "name": "MANAGE_PLANDEFINITION",
+        "composite": true,
+        "description": "Allow users to manage PlanDefinition.",
+        "composites": {
+          "realm": [
+            "GET_PLANDEFINITION",
+            "POST_PLANDEFINITION",
+            "PUT_PLANDEFINITION",
+            "DELETE_PLANDEFINITION"
+          ]
+        }
+      },
+      {
+        "name": "GET_QUESTIONNAIRE",
+        "composite": false,
+        "description": "Allow users to fetch Questionnaire."
+      },
+      {
+        "name": "POST_QUESTIONNAIRE",
+        "composite": false,
+        "description": "Allow users to create Questionnaire."
+      },
+      {
+        "name": "PUT_QUESTIONNAIRE",
+        "composite": false,
+        "description": "Allow users to modify Questionnaire."
+      },
+      {
+        "name": "DELETE_QUESTIONNAIRE",
+        "composite": false,
+        "description": "Allow users to delete Questionnaire."
+      },
+      {
+        "name": "MANAGE_QUESTIONNAIRE",
+        "composite": true,
+        "description": "Allow users to manage Questionnaire.",
+        "composites": {
+          "realm": [
+            "GET_QUESTIONNAIRE",
+            "POST_QUESTIONNAIRE",
+            "PUT_QUESTIONNAIRE",
+            "DELETE_QUESTIONNAIRE"
+          ]
         }
       }
-    ],
-    "roles" : {
-      "realm" : [
-        {
-          "name": "user",
-          "description": "User privileges"
-        },
-        {
-          "name": "admin",
-          "description": "Administrator privileges"
-        }
-      ]
-    }
+    ]
   }
+}
