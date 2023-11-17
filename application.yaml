@@ -22,6 +22,7 @@ spring:
       hibernate.show_sql: false
       hibernate.hbm2ddl.auto: update
       hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+      hibernate.search.enabled: true
   batch:
     job:
       enabled: false
