@@ -2,17 +2,18 @@ version: "3.9"
 services:
   keycloak:
     restart: unless-stopped
-    image: quay.io/keycloak/keycloak:19.0.3-legacy
+    image: quay.io/keycloak/keycloak:22.0.5
     container_name: keycloak
+    command:
+      - "start-dev"
+      - "--http-relative-path /auth"
     environment:
-      - "KEYCLOAK_USER=admin"
-      - "KEYCLOAK_PASSWORD=admin"
-      - "DB_VENDOR=postgres"
-      - "DB_PASSWORD=0000"
-      - "DB_USER=root"
-      - "DB_ADDR=postgres:5432"
-      - "PROXY_ADDRESS_FORWARDING=true"
-      - "DB_DATABASE=fhir"
+      - "KEYCLOAK_ADMIN=admin"
+      - "KEYCLOAK_ADMIN_PASSWORD=admin"
+      - "KC_DB=postgres"
+      - "KC_DB_USERNAME=root"
+      - "KC_DB_PASSWORD=root"
+      - "KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak"
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -37,7 +38,7 @@ services:
   hapi-fhir:
     restart: unless-stopped
     container_name: hapi-fhir
-    image: opensrp/hapi-fhir-jpaserver-starter:v6.1.8-SNAPSHOT
+    image: opensrp/hapi-fhir-jpaserver-starter:v6.2.1-SNAPSHOT
     ports:
       - "8081:8080"
     volumes:
@@ -54,14 +55,17 @@ services:
 
   postgres:
     restart: unless-stopped
-    image: postgres:14
+    build:
+      context: .
+      dockerfile: postgres.Dockerfile
+    # command: ["postgres", "-c", "log_statement=all"]
     container_name: postgres
     ports:
       - "5457:5432"
     environment:
-      - POSTGRES_PASSWORD=0000
+      - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
-      - POSTGRES_DB=fhir
+      - POSTGRES_MULTIPLE_DATABASES=fhir,keycloak
       - PGDATA=/var/lib/postgresql/data/pgdata
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -85,8 +89,8 @@ services:
       - 'EXPRESS_REACT_BUILD_PATH=/usr/src/web'
 
       # keycloak
-      - 'EXPRESS_OPENSRP_CLIENT_ID=fhir-client'
-      - 'EXPRESS_OPENSRP_CLIENT_SECRET=64cK4L5vo8IhoLasPvZivZe0P08GzVIW'
+      - 'EXPRESS_OPENSRP_CLIENT_ID=fhir-web'
+      - 'EXPRESS_OPENSRP_CLIENT_SECRET=clientSecret'
       - 'EXPRESS_OPENSRP_ACCESS_TOKEN_URL=http://keycloak:8080/auth/realms/fhir/protocol/openid-connect/token'
       - 'EXPRESS_OPENSRP_AUTHORIZATION_URL=http://keycloak:8080/auth/realms/fhir/protocol/openid-connect/auth'
       - 'EXPRESS_KEYCLOAK_LOGOUT_URL=http://keycloak:8080/auth/realms/fuff/protocol/openid-connect/logout'

@@ -9,7 +9,7 @@ window._env_ = {
     'http://localhost:8080/auth/realms/fhir/protocol/openid-connect/token',
   REACT_APP_OPENSRP_AUTHORIZATION_URL:
     'http://localhost:8080/auth/realms/fhir/protocol/openid-connect/auth',
-  REACT_APP_OPENSRP_CLIENT_ID: 'fhir-client',
+  REACT_APP_OPENSRP_CLIENT_ID: 'fhir-web',
   REACT_APP_OPENSRP_USER_URL:
     'http://localhost:8080/auth/realms/fhir-app/protocol/openid-connect/userinfo',
 
