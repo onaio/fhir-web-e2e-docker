@@ -3,18 +3,27 @@
   "enabled": true,
   "clients": [
     {
-      "name": "Fhir test client",
-      "clientId": "fhir-client",
+      "name": "Fhir web client",
+      "clientId": "fhir-web",
       "enabled": true,
-      "publicClient": true,
-      "directAccessGrantsEnabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
       "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
       "redirectUris": [
-        "http://localhost:3000/*"
+        "http://localhost:3000/*",
+        "https://fhir-web.opensrp-stage.smartregister.org/*"
       ],
       "webOrigins": [
-        "http://localhost:3000"
-      ]
+        "http://localhost:3000",
+        "https://fhir-web.opensrp-stage.smartregister.org"
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://localhost:300/*##https://fhir-web.opensrp-stage.smartregister.org/*"
+      },
+      "secret": "clientSecret"
     }
   ],
   "users": [
