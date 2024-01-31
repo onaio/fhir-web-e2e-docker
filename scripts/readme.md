@@ -1,4 +1,8 @@
-Setup
+# Keycloak setup script
+
+You can use this script to create, update resources on you keycloak instance as required by fhir-web.
+
+## Setup
 
 `yarn`
 
