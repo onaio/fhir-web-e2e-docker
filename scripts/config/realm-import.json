@@ -28,24 +28,24 @@
   ],
   "users": [
     {
-      "username": "demo",
+      "username": "sales-force",
       "enabled": true,
       "email": "demo@ona.io",
-      "firstName": "demo",
-      "lastName": "stration",
+      "firstName": "sales",
+      "lastName": "force",
       "credentials": [
         {
           "type": "password",
-          "value": "password"
+          "value": "Amani123"
         }
       ],
       "groups": [
-        "/fhir-super-user/demigod"
+        "/Fhir Super User"
       ],
-      "emailVerified": false,
+      "emailVerified": true,
       "attributes": {
         "fhir-core-app-id": [
-          "app-id"
+          "quest"
         ]
       }
     },
@@ -60,6 +60,9 @@
           "value": "admin"
         }
       ],
+      "groups": [
+        "/Fhir Super User/Admin"
+      ],
       "clientRoles": {
         "realm-management": [
           "realm-admin"
@@ -72,7 +75,7 @@
   ],
   "groups": [
     {
-      "name": "fhir-super-user",
+      "name": "Fhir Super User",
       "realmRoles": [
         "MANAGE_PATIENT",
         "MANAGE_PRACTITIONER",
@@ -90,7 +93,7 @@
       ],
       "subGroups": [
         {
-          "name": "demigod",
+          "name": "Admin",
           "clientRoles": {
             "realm-management": [
               "realm-admin"
@@ -100,14 +103,14 @@
       ]
     },
     {
-      "name": "chw",
+      "name": "CHW",
       "realmRoles": [
         "MANAGE_QUESTIONNAIRE",
         "MANAGE_QUESTIONNAIRERESPONSE"
       ]
     },
     {
-      "name": "supervisor",
+      "name": "Supervisor",
       "realmRoles": [
         "MANAGE_ORGANIZATION",
         "MANAGE_ORGANIZATIONAFFILIATION",
