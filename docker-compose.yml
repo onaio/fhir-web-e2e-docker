@@ -2,11 +2,13 @@ version: "3.9"
 services:
   keycloak:
     restart: unless-stopped
-    image: quay.io/keycloak/keycloak:22.0.5
+    image: quay.io/keycloak/keycloak:25.0.4
     container_name: keycloak
     command:
       - "start-dev"
-      - "--http-relative-path /auth"
+      - "--http-relative-path=/auth"
+    volumes:
+      - ./keycloak-theme.jar:/opt/keycloak/providers/keycloak-theme.jar
     environment:
       - "KEYCLOAK_ADMIN=admin"
       - "KEYCLOAK_ADMIN_PASSWORD=admin"
@@ -14,6 +16,7 @@ services:
       - "KC_DB_USERNAME=root"
       - "KC_DB_PASSWORD=root"
       - "KC_DB_URL=jdbc:postgresql://postgres:5432/keycloak"
+      - "KC_LOG_LEVEL=DEBUG"
     ports:
       - "8080:8080"
       - "8443:8443"
@@ -38,7 +41,7 @@ services:
   hapi-fhir:
     restart: unless-stopped
     container_name: hapi-fhir
-    image: opensrp/hapi-fhir-jpaserver-starter:v6.2.1-SNAPSHOT
+    image: opensrp/hapi-fhir-jpaserver-starter:v6.1.7-SNAPSHOT
     ports:
       - "8081:8080"
     volumes:
@@ -72,7 +75,9 @@ services:
 
   fhir-web:
     restart: unless-stopped
-    image: opensrp/web:v3.1.2
+    # image: opensrp/web:latest
+    image: hackathon
+    # pull_policy: always
     container_name: fhir-web
     ports:
       - '3000:3000'
@@ -81,7 +86,11 @@ services:
       - ./config.js.tpl:/etc/confd/templates/config.js.tmpl
     depends_on:
       - hapi-fhir
+      - keycloak
+      - redis
     environment:
+      - 'OAUTHLIB_INSECURE_TRANSPORT=1'
+      - 'EXPRESS_PYTHON_INTERPRETER_PATH=/usr/local/bin/python'
       # optional overrides
       - 'NODE_ENV=development' # 'NODE_ENV=development' if fhir-web-base-url === http://localhost:3000
       - 'EXPRESS_ALLOW_TOKEN_RENEWAL=true'
@@ -109,6 +118,7 @@ services:
       # remove optional-sentry-base-url config block if your deployment has no sentry
       # - 'EXPRESS_CONTENT_SECURITY_POLICY_CONFIG={"connect-src":["''self''","http://localhost:8080","http://localhost:8081/fhir"],"default-src":["''self''"],"img-src":["''self''","https://github.com/opensrp/","https://*.githubusercontent.com/opensrp/"]}'
       - 'EXPRESS_CONTENT_SECURITY_POLICY_CONFIG=false'
+      - 'EXPRESS_OPENSRP_SERVER_URL=http://localhost:8081/fhir'
 
   redis:
       image: redis:latest

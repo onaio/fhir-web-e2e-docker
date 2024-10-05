@@ -41,7 +41,9 @@ async function createGroup(group){
     for (const role of (group.realmRoles)) {
       const roleRep = await adminClient.roles.findOneByName({name: role})
       console.error({roleRep, role})
+    if(roleRep !== null){
       realmRoles.push(roleRep);
+    }
     }
     console.log({realmRoles, sample: realmRoles[0]})
     finalCreatedGroup =  await adminClient.groups.addRealmRoleMappings({
@@ -74,9 +76,9 @@ async function createGroups(realmConfig) {
 }
 
 async function main() {
-  // await createRoles(realmImportConfig)
-  // await createGroups(realmImportConfig)
-  await createUsers(realmImportConfig)
+  await createRoles(realmImportConfig)
+  // // await createGroups(realmImportConfig)
+  // await createUsers(realmImportConfig)
 }
 
 main()

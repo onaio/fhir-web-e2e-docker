@@ -1,5 +1,5 @@
 {
-  "realm": "fhir",
+  "realm": "pharmaccess-stage",
   "enabled": true,
   "clients": [
     {
@@ -14,25 +14,26 @@
       "serviceAccountsEnabled": false,
       "redirectUris": [
         "http://localhost:3000/*",
-        "https://fhir-web.opensrp-stage.smartregister.org/*"
+        "gateway-pharmaccess.labs.smartregister.org/*",
+        "web-pharmaccess.labs.smartregister.org/*"
       ],
       "webOrigins": [
         "http://localhost:3000",
-        "https://fhir-web.opensrp-stage.smartregister.org"
+        "gateway-pharmaccess.labs.smartregister.org",
+        "web-pharmaccess.labs.smartregister.org"
       ],
       "attributes": {
-        "post.logout.redirect.uris": "http://localhost:300/*##https://fhir-web.opensrp-stage.smartregister.org/*"
+        "post.logout.redirect.uris": "http://localhost:300/*##web-pharmaccess.labs.smartregister.org/*"
       },
-      "secret": "clientSecret"
+      "secret": "eXgCj94l80HCOILEPRqBgj20cvMDmEIi"
     }
   ],
   "users": [
     {
-      "username": "sales-force",
+      "username": "demo",
       "enabled": true,
-      "email": "demo@ona.io",
-      "firstName": "sales",
-      "lastName": "force",
+      "firstName": "demo",
+      "lastName": "nstation",
       "credentials": [
         {
           "type": "password",
@@ -41,27 +42,6 @@
       ],
       "groups": [
         "/Fhir Super User"
-      ],
-      "emailVerified": true,
-      "attributes": {
-        "fhir-core-app-id": [
-          "quest"
-        ]
-      }
-    },
-    {
-      "username": "webmaster",
-      "enabled": true,
-      "firstName": "web",
-      "lastName": "master",
-      "credentials": [
-        {
-          "type": "password",
-          "value": "admin"
-        }
-      ],
-      "groups": [
-        "/Fhir Super User/Admin"
       ],
       "clientRoles": {
         "realm-management": [
@@ -100,22 +80,6 @@
             ]
           }
         }
-      ]
-    },
-    {
-      "name": "CHW",
-      "realmRoles": [
-        "MANAGE_QUESTIONNAIRE",
-        "MANAGE_QUESTIONNAIRERESPONSE"
-      ]
-    },
-    {
-      "name": "Supervisor",
-      "realmRoles": [
-        "MANAGE_ORGANIZATION",
-        "MANAGE_ORGANIZATIONAFFILIATION",
-        "MANAGE_LOCATION",
-        "MANAGE_PRACTITIONER"
       ]
     }
   ],
